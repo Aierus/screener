@@ -22,7 +22,7 @@ for i in range(len(indicies)):
 start_date = datetime.datetime.now() - datetime.timedelta(days=365)
 yester_date = datetime.datetime.now() - datetime.timedelta(days=1)
 end_date = datetime.date.today()
-exportList = pd.DataFrame(columns=['Stock', 'Volume', 'Weighted Volume'])
+exportList = pd.DataFrame(columns=['Stock', 'Volume', 'Average Volume', 'Weighted Volume'])
 
 spooz_data = pdr.get_data_yahoo('SPY', start_date, end_date)
 spooz_data.to_csv('SPY.csv')
@@ -76,6 +76,11 @@ for i in range(len(index_name)):
         p_vol_dev = round(p_vol_dev, 4)
         volume_deviation_values.append(p_vol_dev)
         # print('Ticker %s on day %d; Had a weighted volume deviation of %.4f from the previous day\n' % (ticker, i, p_vol_dev))
+      if (i == rows):
+        exportList['Stock'] = ticker
+        exportList['Volume'] = df.loc[df.index, 'Volume'].iat[rows]
+        exportList['Average Volume'] = average_vol
+        exportList['Weighted Volume'] = df.loc[df.index, 'SPY Weighted Volume'].iat[rows]
       else:
         volume_deviation.append('-')
         volume_deviation_values.append('-')
@@ -86,7 +91,8 @@ for i in range(len(index_name)):
     print(f'Writing {ticker} to csv')
 
 # Create DataFrame
-#vol_df = pd.DataFrame(list(zip(tickers, )))
+top_vol_df = pd.DataFrame(list(zip(tickers, )))
+exportList.sort_values(by=['Weighted Volume'])
 
 
 
