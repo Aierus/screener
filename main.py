@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import datetime
 import time
+import os
 
 # Variables
 spy = si.tickers_sp500()
@@ -100,7 +101,8 @@ for i in range(len(index_name)):
     df['Volume Deviation Value'] = volume_deviation_values
     df['Weighted Volume Deviation Values'] = w_vol_dev_values
 
-    df.to_csv(f'{ticker}.csv')
+    os.makedirs('csv_output', exist_ok=True)
+    df.to_csv(f'csv_output/{ticker}.csv')
     print(f'Writing {ticker} to csv')
 
 # Create DataFrame of top 10%
@@ -108,6 +110,7 @@ vd_df = pd.DataFrame(list(zip(tickers, volume_deviation_values)), columns=['Tick
 vd_df['Volume_Deviation_Rating'] = vd_df.Percent_Deviation.rank(pct=True) * 100
 vd_df = vd_df[vd_df.Volume_Deviation_Rating >= vd_df.Volume_deviation_ration.quantile(.90)]
 vd_df.to_csv('Top_10_Percent_Volume_Deviation_Today.csv')
+print("##### Top 10%\ of volume deviation stocks written to csv ######")
 
 vd_stocks = vd_df['Ticker']
 for stock in vd_stocks:
